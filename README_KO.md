@@ -3,6 +3,8 @@
 Dreamine.Logging은 Dreamine 애플리케이션을 위한 핵심 로그 인프라 패키지입니다.
 Logger 추상화, 로그 엔트리 모델, 메모리 로그 저장소, 텍스트 포매터, 복합 Sink, 일자별 텍스트 파일 저장 기능을 제공합니다.
 
+[➡️ English Version](./README.md)
+
 ## 목적
 
 이 패키지는 WPF 또는 특정 UI 프레임워크에 의존하지 않는 순수 로그 Core 계층입니다.

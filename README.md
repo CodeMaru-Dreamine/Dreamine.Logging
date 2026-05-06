@@ -1,7 +1,9 @@
-# Dreamine.Logging
+﻿# Dreamine.Logging
 
 Dreamine.Logging provides the core logging infrastructure for Dreamine applications.
 It defines logger abstractions, log entry models, in-memory log storage, text formatting, composite sinks, and daily text file output.
+
+[➡️ 한국어 문서 보기](./README_KO.md)
 
 ## Purpose
 
