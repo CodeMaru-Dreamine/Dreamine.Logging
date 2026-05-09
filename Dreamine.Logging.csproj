@@ -6,10 +6,10 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 
 		<PackageId>Dreamine.Logging</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<Authors>Dreamine Core Team</Authors>
 		<Company>Dreamine</Company>
-		<Description>Core logging infrastructure for Dreamine applications, including log abstractions, in-memory storage, text formatting, composite sinks, and text file output.</Description>
+		<Description>WPF logging UI for Dreamine applications: log panel view and view model with bounded display capacity, batched UI dispatcher to coalesce high-frequency log updates, and AutoScroll/EntryAppended hooks.</Description>
 		<PackageTags>dreamine;logging;logger;sink;formatter;diagnostics;infrastructure</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<RepositoryUrl>https://github.com/CodeMaru-Dreamine/Dreamine.Logging</RepositoryUrl>
@@ -24,6 +24,10 @@
 	<ItemGroup>
 		<None Include="README.md" Pack="true" PackagePath="\" />
 		<None Include="icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Core\Dreamine.MVVM.Core.csproj" />
 	</ItemGroup>
 
 </Project>

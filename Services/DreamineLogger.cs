@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Dreamine.Logging.Interfaces;
 using Dreamine.Logging.Models;
 
@@ -29,6 +29,27 @@ public sealed class DreamineLogger : IDreamineLogger
     /// <param name="category">The log category.</param>
     public DreamineLogger(IDreamineLogSink sink, string category)
         : this(new[] { sink }, DreamineLogLevel.Trace, category)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DreamineLogger"/> class
+    /// with a single sink, minimum level, and category.
+    /// </summary>
+    /// <param name="sink">The log sink.</param>
+    /// <param name="minimumLevel">The minimum log level.</param>
+    /// <param name="category">The log category.</param>
+    /// <remarks>
+    /// Convenience overload that wraps a single sink as
+    /// <c>IEnumerable&lt;IDreamineLogSink&gt;</c> internally so callers do not
+    /// need to construct a one-element array when using <see cref="Sinks.AsyncQueueSink"/>
+    /// or any other single-sink pipeline.
+    /// </remarks>
+    public DreamineLogger(
+        IDreamineLogSink sink,
+        DreamineLogLevel minimumLevel,
+        string category)
+        : this(new[] { sink }, minimumLevel, category)
     {
     }
 
