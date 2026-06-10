@@ -18,11 +18,23 @@ public static class DreamineLoggingRegistration
     /// Registers Dreamine core logging services.
     /// </summary>
     /// <param name="configure">The optional logging configuration action.</param>
-    /// <returns>The registered async queue sink.</returns>
-    public static AsyncQueueSink Register(Action<DreamineLoggingOptions>? configure = null)
+    /// <returns>An async-disposable handle that drains the registered sink on disposal.</returns>
+    public static IAsyncDisposable Register(Action<DreamineLoggingOptions>? configure = null)
     {
         var options = new DreamineLoggingOptions();
         configure?.Invoke(options);
+
+        return Register(options);
+    }
+
+    /// <summary>
+    /// Registers Dreamine core logging services.
+    /// </summary>
+    /// <param name="options">The logging options.</param>
+    /// <returns>An async-disposable handle that drains the registered sink on disposal.</returns>
+    public static IAsyncDisposable Register(DreamineLoggingOptions options)
+    {
+        ArgumentNullException.ThrowIfNull(options);
 
         var logStore = new InMemoryLogStore(options.StoreCapacity);
         var formatter = new DreamineTextLogFormatter();
@@ -51,9 +63,27 @@ public static class DreamineLoggingRegistration
         DMContainer.RegisterSingleton(logStore);
         DMContainer.RegisterSingleton<IDreamineLogStore>(logStore);
         DMContainer.RegisterSingleton<IDreamineLogFormatter>(formatter);
+        DMContainer.RegisterSingleton(asyncSink);
         DMContainer.RegisterSingleton<IDreamineLogSink>(asyncSink);
         DMContainer.RegisterSingleton<IDreamineLogger>(logger);
 
-        return asyncSink;
+        return new LoggingShutdownHandle(asyncSink, options.ShutdownTimeout);
+    }
+
+    private sealed class LoggingShutdownHandle : IAsyncDisposable
+    {
+        private readonly AsyncQueueSink _asyncSink;
+        private readonly TimeSpan _shutdownTimeout;
+
+        public LoggingShutdownHandle(AsyncQueueSink asyncSink, TimeSpan shutdownTimeout)
+        {
+            _asyncSink = asyncSink;
+            _shutdownTimeout = shutdownTimeout;
+        }
+
+        public async ValueTask DisposeAsync()
+        {
+            await _asyncSink.ShutdownAsync(_shutdownTimeout).ConfigureAwait(false);
+        }
     }
 }

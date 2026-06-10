@@ -65,56 +65,24 @@ The WPF-side display bound is handled by `Dreamine.Logging.Wpf`.
 
 ## Example Registration
 
-The following registration keeps the logger simple and moves asynchronous behavior into the sink chain.
+The built-in registration configures the sink chain and returns an async-disposable shutdown handle.
 
 ```csharp
-private static AsyncQueueSink? _asyncLogSink;
+private static IAsyncDisposable? _loggingShutdown;
 
 private static void RegisterLogging()
 {
-    // --- 1. Synchronous sinks -----------------------------------------
-    var logStore = new InMemoryLogStore(capacity: 1000);
-    var formatter = new DreamineTextLogFormatter();
-
-    var textFileSink = new TextFileLogSink(
-        Path.Combine(AppContext.BaseDirectory, "Logs"),
-        formatter,
-        flushEveryWriteCount: 20);
-
-    var compositeSink = new CompositeLogSink(new IDreamineLogSink[]
+    _loggingShutdown = DreamineLoggingRegistration.Register(new DreamineLoggingOptions
     {
-        logStore,
-        textFileSink
+        Category = "SampleSmart",
+        LogDirectory = Path.Combine(AppContext.BaseDirectory, "Logs")
     });
-
-    // --- 2. Async decorator -------------------------------------------
-    _asyncLogSink = new AsyncQueueSink(
-        compositeSink,
-        capacity: 8192,
-        drainBatchSize: 256);
-
-    // --- 3. Logger ----------------------------------------------------
-    // Note: DreamineLogger currently has no (single sink, level, category)
-    // overload, so even a single sink is wrapped as IEnumerable<IDreamineLogSink>.
-    var logger = new DreamineLogger(
-        new IDreamineLogSink[] { _asyncLogSink },
-        DreamineLogLevel.Trace,
-        category: "SampleSmart");
-
-    // --- 4. DI registration -------------------------------------------
-    DMContainer.RegisterSingleton(logStore);
-    DMContainer.RegisterSingleton<IDreamineLogStore>(logStore);
-    DMContainer.RegisterSingleton<IDreamineLogFormatter>(formatter);
-
-    // Expose the async sink so external consumers also pass through the queue.
-    DMContainer.RegisterSingleton<IDreamineLogSink>(_asyncLogSink);
-    DMContainer.RegisterSingleton<IDreamineLogger>(logger);
 }
 ```
 
 ## Shutdown
 
-When `AsyncQueueSink` is used, drain the queue during application shutdown.
+When the async registration handle is used, dispose it during application shutdown.
 This prevents recent logs from being lost and also disposes the inner sink chain, including file handles.
 
 ```csharp
@@ -122,9 +90,7 @@ protected override void OnExit(ExitEventArgs e)
 {
     try
     {
-        _asyncLogSink?.ShutdownAsync(TimeSpan.FromSeconds(2))
-                      .GetAwaiter()
-                      .GetResult();
+        _loggingShutdown?.DisposeAsync().AsTask().GetAwaiter().GetResult();
     }
     catch
     {

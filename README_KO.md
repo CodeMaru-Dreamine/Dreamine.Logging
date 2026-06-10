@@ -29,7 +29,7 @@ WPF 전용 로그 패널은 `Dreamine.Logging.Wpf` 패키지가 담당합니다.
 
 ## 권장 구조
 
-일반 애플리케이션에서는 Logger와 실제 Sink 체인 사이에 `AsyncQueueSink`를 배치하는 것을 권장합니다.
+기본 등록 API는 Sink 체인을 구성하고 종료 시 사용할 비동기 dispose handle을 반환합니다.
 이 구조는 작업 쓰레드가 파일 I/O 또는 UI 표시용 저장소 갱신 때문에 직접 지연되는 것을 막습니다.
 
 ```text
@@ -68,53 +68,21 @@ WPF 표시 컬렉션의 상한 및 UI Dispatcher 배치 처리는 `Dreamine.Logg
 아래 등록 방식은 Logger는 단순하게 유지하고, 비동기 처리는 Sink 체인에 위임하는 구조입니다.
 
 ```csharp
-private static AsyncQueueSink? _asyncLogSink;
+private static IAsyncDisposable? _loggingShutdown;
 
 private static void RegisterLogging()
 {
-    // --- 1. Synchronous sinks -----------------------------------------
-    var logStore = new InMemoryLogStore(capacity: 1000);
-    var formatter = new DreamineTextLogFormatter();
-
-    var textFileSink = new TextFileLogSink(
-        Path.Combine(AppContext.BaseDirectory, "Logs"),
-        formatter,
-        flushEveryWriteCount: 20);
-
-    var compositeSink = new CompositeLogSink(new IDreamineLogSink[]
+    _loggingShutdown = DreamineLoggingRegistration.Register(new DreamineLoggingOptions
     {
-        logStore,
-        textFileSink
+        Category = "SampleSmart",
+        LogDirectory = Path.Combine(AppContext.BaseDirectory, "Logs")
     });
-
-    // --- 2. Async decorator -------------------------------------------
-    _asyncLogSink = new AsyncQueueSink(
-        compositeSink,
-        capacity: 8192,
-        drainBatchSize: 256);
-
-    // --- 3. Logger ----------------------------------------------------
-    // Note: 현재 DreamineLogger는 단일 Sink + Level + Category 오버로드가 없으므로
-    // Sink 1개도 IEnumerable<IDreamineLogSink> 형태로 감싸 전달합니다.
-    var logger = new DreamineLogger(
-        new IDreamineLogSink[] { _asyncLogSink },
-        DreamineLogLevel.Trace,
-        category: "SampleSmart");
-
-    // --- 4. DI registration -------------------------------------------
-    DMContainer.RegisterSingleton(logStore);
-    DMContainer.RegisterSingleton<IDreamineLogStore>(logStore);
-    DMContainer.RegisterSingleton<IDreamineLogFormatter>(formatter);
-
-    // 외부에서 IDreamineLogSink를 직접 Resolve하더라도 큐를 통과하도록 등록합니다.
-    DMContainer.RegisterSingleton<IDreamineLogSink>(_asyncLogSink);
-    DMContainer.RegisterSingleton<IDreamineLogger>(logger);
 }
 ```
 
 ## 종료 처리
 
-`AsyncQueueSink`를 사용할 경우 애플리케이션 종료 시 큐를 비우는 처리가 필요합니다.
+비동기 등록 handle을 사용할 경우 애플리케이션 종료 시 dispose 하여 큐를 비우는 처리가 필요합니다.
 최근 로그 손실을 줄이고, 내부 Sink 체인과 파일 핸들을 정상적으로 정리하기 위한 목적입니다.
 
 ```csharp
@@ -122,9 +90,7 @@ protected override void OnExit(ExitEventArgs e)
 {
     try
     {
-        _asyncLogSink?.ShutdownAsync(TimeSpan.FromSeconds(2))
-                      .GetAwaiter()
-                      .GetResult();
+        _loggingShutdown?.DisposeAsync().AsTask().GetAwaiter().GetResult();
     }
     catch
     {
