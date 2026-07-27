@@ -328,7 +328,7 @@ namespace Dreamine.Logging.Sinks
             }
             catch (OperationCanceledException)
             {
-                _cts.Cancel();
+                await _cts.CancelAsync().ConfigureAwait(false);
                 try
                 {
                     await _workerTask.ConfigureAwait(false);
