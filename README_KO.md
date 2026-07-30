@@ -1,5 +1,18 @@
 # Dreamine.Logging
 
+[![CI](https://github.com/CodeMaru-Dreamine/Dreamine.Logging/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeMaru-Dreamine/Dreamine.Logging/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CodeMaru-Dreamine_Dreamine.Logging&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=CodeMaru-Dreamine_Dreamine.Logging)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=CodeMaru-Dreamine_Dreamine.Logging&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=CodeMaru-Dreamine_Dreamine.Logging)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=CodeMaru-Dreamine_Dreamine.Logging&metric=coverage)](https://sonarcloud.io/summary/new_code?id=CodeMaru-Dreamine_Dreamine.Logging)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![.NET](https://img.shields.io/badge/.NET-8-512BD4)
+[![NuGet](https://img.shields.io/nuget/v/Dreamine.Logging.svg)](https://www.nuget.org/packages/Dreamine.Logging)
+[![Downloads](https://img.shields.io/nuget/dt/Dreamine.Logging.svg)](https://www.nuget.org/packages/Dreamine.Logging)
+[![문서](https://img.shields.io/badge/문서-dreamine.kr-2496ED)](https://dreamine.kr)
+[![가이드](https://img.shields.io/badge/가이드-dreamine.kr-2496ED)](https://dreamine.kr)
+[![플레이그라운드](https://img.shields.io/badge/플레이그라운드-dreamine.kr-7C3AED)](https://dreamine.kr)
+[![도서](https://img.shields.io/badge/도서-실전%20MVVM%20아키텍처-111827)](https://dreamine.kr)
+
 Dreamine.Logging은 Dreamine 애플리케이션을 위한 핵심 로그 인프라 패키지입니다.
 Logger 추상화, 구조화된 로그 엔트리, 메모리 진단 저장소, 텍스트 포매터, 복합 Sink, 일자별 텍스트 파일 출력, 그리고 고빈도 멀티스레드 로그 처리를 위한 비동기 큐 Sink를 제공합니다.
 
