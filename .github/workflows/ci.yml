@@ -35,6 +35,24 @@ jobs:
           repository: CodeMaru-Dreamine/Dreamine.MVVM.Core
           path: src/Core
 
+      - name: Check out MVVM Attributes dependency
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: CodeMaru-Dreamine/Dreamine.MVVM.Attributes
+          path: src/Attributes
+
+      - name: Check out MVVM Interfaces dependency
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: CodeMaru-Dreamine/Dreamine.MVVM.Interfaces
+          path: src/Interfaces
+
+      - name: Check out MVVM Locators dependency
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          repository: CodeMaru-Dreamine/Dreamine.MVVM.Locators
+          path: src/Locators
+
       - name: Set up .NET
         uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1 # v5
         with:
