@@ -1,5 +1,18 @@
 # Dreamine.Logging
 
+[![CI](https://github.com/CodeMaru-Dreamine/Dreamine.Logging/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeMaru-Dreamine/Dreamine.Logging/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=CodeMaru-Dreamine_Dreamine.Logging&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=CodeMaru-Dreamine_Dreamine.Logging)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=CodeMaru-Dreamine_Dreamine.Logging&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=CodeMaru-Dreamine_Dreamine.Logging)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=CodeMaru-Dreamine_Dreamine.Logging&metric=coverage)](https://sonarcloud.io/summary/new_code?id=CodeMaru-Dreamine_Dreamine.Logging)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![.NET](https://img.shields.io/badge/.NET-8-512BD4)
+[![NuGet](https://img.shields.io/nuget/v/Dreamine.Logging.svg)](https://www.nuget.org/packages/Dreamine.Logging)
+[![Downloads](https://img.shields.io/nuget/dt/Dreamine.Logging.svg)](https://www.nuget.org/packages/Dreamine.Logging)
+[![Docs](https://img.shields.io/badge/Docs-dreamine.kr-2496ED)](https://dreamine.kr)
+[![Guide](https://img.shields.io/badge/Guide-dreamine.kr-2496ED)](https://dreamine.kr)
+[![Playground](https://img.shields.io/badge/Playground-dreamine.kr-7C3AED)](https://dreamine.kr)
+[![Book](https://img.shields.io/badge/Book-Practical%20MVVM%20Architecture-111827)](https://dreamine.kr)
+
 Dreamine.Logging provides the core logging infrastructure for Dreamine applications.
 It defines logger abstractions, structured log entries, in-memory diagnostics storage, text formatting, composite sinks, daily text file output, and an async queue sink for high-frequency multi-threaded logging.
 
